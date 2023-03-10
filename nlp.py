@@ -38,3 +38,34 @@ word_index = tokenizer.word_index
 sequences = tokenizer.texts_to_sequences(sentences)
 
 print(sequences) ## [[1, 2, 3, 4, 5], [1, 2, 3, 6, 5], [2, 7, 4, 1]]
+
+
+## OOV token out-of-vocab  
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras.preprocessing.text import Tokenizer
+
+sentences = [
+    'Today is a sunny day',
+    'Today is a rainy day',
+    'Is it sunny today?'
+]
+
+test_data = [
+    'Today is a snowy day',
+    'Will it be rainy tomorrow?'
+]
+
+## oov_token paramet (can name any string -- preferably not one being used in data)
+tokenizer = Tokenizer(num_words = 100, oov_token="<OOV>")
+tokenizer.fit_on_texts(sentences)
+word_index = tokenizer.word_index
+
+sequences = tokenizer.texts_to_sequences(sentences)
+
+test_sequences = tokenizer.texts_to_sequences(test_data)
+print(word_index) ## {'<OOV>': 1, 'today': 2, 'is': 3, 'a': 4, 'sunny': 5, 'day': 6, 'rainy': 7, 'it': 8}
+
+## pre OOV below prints [[1, 2, 3, 5], [7, 6]] which loses context
+print(test_sequences)
+## currently prints [[2, 3, 4, 1, 6], [1, 8, 1, 7, 1]] which is closer to the original meaning
